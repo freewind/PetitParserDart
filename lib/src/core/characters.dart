@@ -211,6 +211,8 @@ Parser whitespace([String message]) {
       message != null ? message : 'whitespace expected');
 }
 
+Parser whitespaceInLine([String message]) => char('\n').not(message) & whitespace(message);
+
 class _WhitespaceCharMatcher extends _CharMatcher {
   const _WhitespaceCharMatcher();
   bool match(int value) => (9 <= value && value <= 13) || (value == 32) || (value == 160)

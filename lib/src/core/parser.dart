@@ -378,6 +378,19 @@ abstract class Parser {
     });
   }
 
+  Parser until(Parser p) => this.seq(p.neg().star()).seq(p);
+  Parser untilChar(String c) => until(char(c));
+  Parser untilString(String str) => until(string(str));
+  Parser untilInLine(Parser p) => this.seq(p.or(char('\n')).neg().star()).seq(p);
+  Parser untilSame() => until(this);
+  Parser untilSameInLine() => untilInLine(this);
+
+  Parser trimLeft([Parser trimmer]) => new _TrimmingParser.oneSide(this, true, false, trimmer == null ? whitespace() : trimmer);
+  Parser trimRight([Parser trimmer]) => new _TrimmingParser.oneSide(this, false, true, trimmer == null ? whitespace() : trimmer);
+  Parser trimLeftInLine() => trimLeft(whitespaceInLine());
+  Parser trimRightInLine() => trimRight(whitespaceInLine());
+  Parser trimInLine() => trim(whitespaceInLine());
+
   /**
    * Returns a shallow copy of the receiver.
    */

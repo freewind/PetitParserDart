@@ -37,24 +37,34 @@ class _ActionParser extends DelegateParser {
  */
 class _TrimmingParser extends DelegateParser {
 
+  bool _trimLeft = true;
+
+  bool _trimRight = true;
+
   Parser _trimmer;
 
   _TrimmingParser(parser, this._trimmer) : super(parser);
 
+  _TrimmingParser.oneSide(parser, this._trimLeft, this._trimRight, this._trimmer) : super(parser);
+
   @override
   Result parseOn(Context context) {
     var current = context;
-    do {
-      current = _trimmer.parseOn(current);
-    } while (current.isSuccess);
+    if(_trimLeft) {
+      do {
+        current = _trimmer.parseOn(current);
+      } while (current.isSuccess);
+    }
     var result = _delegate.parseOn(current);
     if (result.isFailure) {
       return result;
     }
     current = result;
-    do {
-      current = _trimmer.parseOn(current);
-    } while (current.isSuccess);
+    if(_trimRight) {
+      do {
+        current = _trimmer.parseOn(current);
+      } while (current.isSuccess);
+    }
     return current.success(result.value);
   }
 
